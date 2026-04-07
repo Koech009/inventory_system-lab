@@ -54,7 +54,7 @@ pipenv install
 
 ▶️ Usage
 Run the Flask API:
-flask run
+python run.py
 
 API will be available at:
 http://127.0.0.1:5000/inventory
