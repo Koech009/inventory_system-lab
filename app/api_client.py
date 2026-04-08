@@ -16,7 +16,7 @@ def fetch_product_by_barcode(barcode):
 
     url = f"{BASE_URL}/{barcode}.json"
     headers = {
-        "User-Agent": "InventorySystem/1.0 (contact: iankipchirchir51.com)",
+        "User-Agent": "InventorySystem/1.0 (contact: iankipchirchir51@gmail.com)",
         "Accept": "application/json"
     }
 
