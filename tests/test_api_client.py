@@ -3,7 +3,6 @@ from app.api_client import fetch_product_by_barcode
 
 
 def test_fetch_product_by_barcode_valid(monkeypatch):
-    # Mock requests.get to avoid hitting the real API
     import requests
 
     class MockResponse:
@@ -18,7 +17,11 @@ def test_fetch_product_by_barcode_valid(monkeypatch):
                 }
             }
 
-    def mock_get(*args, **kwargs):
+    def mock_get(url, headers=None, timeout=None):
+        # Ensure headers are passed correctly
+        assert "User-Agent" in headers
+        assert "InventorySystem" in headers["User-Agent"]
+        assert headers["Accept"] == "application/json"
         return MockResponse()
 
     monkeypatch.setattr(requests, "get", mock_get)
@@ -33,3 +36,22 @@ def test_fetch_product_by_barcode_invalid():
     product = fetch_product_by_barcode("abc")
     assert "error" in product
     assert product["error"] == "Invalid barcode"
+
+
+def test_fetch_product_by_barcode_not_found(monkeypatch):
+    import requests
+
+    class MockResponse:
+        status_code = 404
+
+        def json(self):
+            return {}
+
+    def mock_get(*args, **kwargs):
+        return MockResponse()
+
+    monkeypatch.setattr(requests, "get", mock_get)
+
+    product = fetch_product_by_barcode("0000000000000")
+    assert "error" in product
+    assert product["error"].startswith("API returned")

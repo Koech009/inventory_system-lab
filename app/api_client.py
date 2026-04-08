@@ -15,10 +15,15 @@ def fetch_product_by_barcode(barcode):
         return {"error": "Invalid barcode"}
 
     url = f"{BASE_URL}/{barcode}.json"
+    headers = {
+        "User-Agent": "InventorySystem/1.0 (contact: iankipchirchir51.com)",
+        "Accept": "application/json"
+    }
+
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, headers=headers, timeout=5)
         if response.status_code != 200:
-            return {"error": "Failed to reach external API"}
+            return {"error": f"API returned {response.status_code}"}
 
         data = response.json()
         product = data.get("product")
